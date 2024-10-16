@@ -1,93 +1,121 @@
-# :package_description
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/cleaniquecoders/app-pulse.svg?style=flat-square)](https://packagist.org/packages/cleaniquecoders/app-pulse) [![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/cleaniquecoders/app-pulse/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/cleaniquecoders/app-pulse/actions?query=workflow%3Arun-tests+branch%3Amain) [![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/cleaniquecoders/app-pulse/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/cleaniquecoders/app-pulse/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain) [![Total Downloads](https://img.shields.io/packagist/dt/cleaniquecoders/app-pulse.svg?style=flat-square)](https://packagist.org/packages/cleaniquecoders/app-pulse)
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/:vendor_slug/:package_slug.svg?style=flat-square)](https://packagist.org/packages/:vendor_slug/:package_slug)
-[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/:vendor_slug/:package_slug/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/:vendor_slug/:package_slug/actions?query=workflow%3Arun-tests+branch%3Amain)
-[![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/:vendor_slug/:package_slug/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/:vendor_slug/:package_slug/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
-[![Total Downloads](https://img.shields.io/packagist/dt/:vendor_slug/:package_slug.svg?style=flat-square)](https://packagist.org/packages/:vendor_slug/:package_slug)
-<!--delete-->
+# **AppPulse**
+
+A comprehensive, easy-to-use monitoring tool with **uptime tracking, SSL certificate checks**, and **customizable notifications** designed for Laravel applications.
+
+**AppPulse** allows developers to monitor websites efficiently by:
+
+- Tracking **website uptime** and logging response times.
+- **Validating SSL certificates** and sending alerts when expiry is near.
+- Providing **custom notifications** that adhere to user configurations, ensuring personalized alerts.
+
 ---
-This repo can be used to scaffold a Laravel package. Follow these steps to get started:
 
-1. Press the "Use this template" button at the top of this repo to create a new repo with the contents of this skeleton.
-2. Run "php ./configure.php" to run a script that will replace all placeholders throughout all the files.
-3. Have fun creating your package.
-4. If you need help creating a package, consider picking up our <a href="https://laravelpackage.training">Laravel Package Training</a> video course.
----
-<!--/delete-->
-This is where your description should go. Limit it to a paragraph or two. Consider adding a small example.
+## **Installation**
 
-## Support us
-
-[<img src="https://github-ads.s3.eu-central-1.amazonaws.com/:package_name.jpg?t=1" width="419px" />](https://spatie.be/github-ad-click/:package_name)
-
-We invest a lot of resources into creating [best in class open source packages](https://spatie.be/open-source). You can support us by [buying one of our paid products](https://spatie.be/open-source/support-us).
-
-We highly appreciate you sending us a postcard from your hometown, mentioning which of our package(s) you are using. You'll find our address on [our contact page](https://spatie.be/about-us). We publish all received postcards on [our virtual postcard wall](https://spatie.be/open-source/postcards).
-
-## Installation
-
-You can install the package via composer:
+You can install the package via Composer:
 
 ```bash
-composer require :vendor_slug/:package_slug
+composer require cleaniquecoders/app-pulse
 ```
 
-You can publish and run the migrations with:
+Publish and run the migrations:
 
 ```bash
-php artisan vendor:publish --tag=":package_slug-migrations"
+php artisan vendor:publish --tag="app-pulse-migrations"
 php artisan migrate
 ```
 
-You can publish the config file with:
+Publish the configuration file:
 
 ```bash
-php artisan vendor:publish --tag=":package_slug-config"
+php artisan vendor:publish --tag="app-pulse-config"
 ```
 
-This is the contents of the published config file:
+Published config file contents:
 
 ```php
 return [
+    'default_check_interval' => 5, // Default interval in minutes
+    'ssl_warning_days' => 30, // Days before SSL expiry to trigger alert
 ];
 ```
 
-Optionally, you can publish the views using
+Optionally, you can publish the views with:
 
 ```bash
-php artisan vendor:publish --tag=":package_slug-views"
+php artisan vendor:publish --tag="app-pulse-views"
 ```
 
-## Usage
+---
+
+## **Usage Example**
+
+You can add monitors through your application logic:
 
 ```php
-$variable = new VendorName\Skeleton();
-echo $variable->echoPhrase('Hello, VendorName!');
+use CleaniqueCoders\AppPulse\Models\Monitor;
+
+$monitor = Monitor::create([
+    'owner_type' => \App\Models\User::class,
+    'owner_id' => 1, // User or Application ID
+    'url' => 'https://example.com',
+    'interval' => 5,
+    'ssl_check' => true,
+]);
 ```
 
-## Testing
+To initiate a check for all monitors:
+
+```bash
+php artisan apppulse:check
+```
+
+---
+
+## **Notifications**
+
+**Notifications** will be sent to the owner of the monitor based on the configured notification channels (e.g., Email, Slack). You can customize the notification settings per user.
+
+---
+
+## **Testing**
+
+Run the tests with:
 
 ```bash
 composer test
 ```
 
-## Changelog
+---
 
-Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
+## **Changelog**
 
-## Contributing
+See [CHANGELOG](CHANGELOG.md) for recent changes.
 
-Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
+---
 
-## Security Vulnerabilities
+## **Contributing**
 
-Please review [our security policy](../../security/policy) on how to report security vulnerabilities.
+Please see [CONTRIBUTING](CONTRIBUTING.md) for details on contributing.
 
-## Credits
+---
 
-- [:author_name](https://github.com/:author_username)
+## **Security Vulnerabilities**
+
+For security concerns, review our [security policy](../../security/policy).
+
+---
+
+## **Credits**
+
+- [Nasrul Hazim Bin Mohamad](https://github.com/nasrulhazim)
 - [All Contributors](../../contributors)
 
-## License
+---
 
-The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
+## **License**
+
+This package is open-sourced software licensed under the [MIT License](LICENSE.md).
+

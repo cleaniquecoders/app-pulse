@@ -1,12 +1,12 @@
 <?php
 
-namespace VendorName\Skeleton\Commands;
+namespace CleaniqueCoders\AppPulse\Commands;
 
 use Illuminate\Console\Command;
 
-class SkeletonCommand extends Command
+class AppPulseCommand extends Command
 {
-    public $signature = 'skeleton';
+    public $signature = 'app-pulse';
 
     public $description = 'My command';
 
