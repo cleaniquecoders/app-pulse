@@ -8,12 +8,35 @@ return new class extends Migration
 {
     public function up()
     {
-        Schema::create('app_pulse_table', function (Blueprint $table) {
+        Schema::create('monitors', function (Blueprint $table) {
             $table->id();
-
-            // add fields
-
+            $table->uuid('uuid')->unique();
+            $table->morphs('owner'); // Polymorphic relation: owner_id and owner_type
+            $table->string('url');
+            $table->string('status')->default('pending');
+            $table->integer('interval')->default(5);
+            $table->boolean('ssl_check')->default(true);
+            $table->timestamp('last_checked_at')->nullable();
             $table->timestamps();
         });
+
+        Schema::create('monitor_histories', function (Blueprint $table) {
+            $table->id();
+            $table->uuid('uuid')->unique();
+            $table->foreignId('monitor_id')
+                ->constrained('monitors')
+                ->onDelete('cascade');
+            $table->string('type'); // 'uptime' or 'ssl'
+            $table->string('status'); // 'up', 'down', 'ssl_valid', 'ssl_expired'
+            $table->integer('response_time')->nullable(); // Response time in ms
+            $table->text('error_message')->nullable(); // Error details, if any
+            $table->timestamps();
+        });
+    }
+
+    public function down()
+    {
+        Schema::dropIfExists('monitor_histories');
+        Schema::dropIfExists('monitors');
     }
 };
