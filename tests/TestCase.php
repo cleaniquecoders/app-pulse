@@ -2,9 +2,9 @@
 
 namespace CleaniqueCoders\AppPulse\Tests;
 
+use CleaniqueCoders\AppPulse\AppPulseServiceProvider;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Orchestra\Testbench\TestCase as Orchestra;
-use CleaniqueCoders\AppPulse\AppPulseServiceProvider;
 
 class TestCase extends Orchestra
 {

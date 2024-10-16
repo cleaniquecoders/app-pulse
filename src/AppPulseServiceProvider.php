@@ -2,9 +2,9 @@
 
 namespace CleaniqueCoders\AppPulse;
 
+use CleaniqueCoders\AppPulse\Commands\AppPulseCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use CleaniqueCoders\AppPulse\Commands\AppPulseCommand;
 
 class AppPulseServiceProvider extends PackageServiceProvider
 {
