@@ -1,11 +1,10 @@
 <?php
 
-use CleaniqueCoders\AppPulse\Models\Monitor;
 use CleaniqueCoders\AppPulse\Actions\Monitor as MonitorAction;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use CleaniqueCoders\AppPulse\Models\Monitor;
 
 beforeEach(function () {
-    $this->monitorAction = new MonitorAction();
+    $this->monitorAction = new MonitorAction;
 });
 
 it('can create a new monitor', function () {

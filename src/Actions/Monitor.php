@@ -15,6 +15,7 @@ class Monitor implements Contract
     public function update(Model $monitor, array $data): Model
     {
         $monitor->update($data);
+
         return $monitor;
     }
 

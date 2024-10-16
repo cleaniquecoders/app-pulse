@@ -2,7 +2,7 @@
 
 namespace CleaniqueCoders\AppPulse;
 
-use CleaniqueCoders\AppPulse\Commands\AppPulseCommand;
+use CleaniqueCoders\AppPulse\Commands\CheckMonitorStatusCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
@@ -20,6 +20,6 @@ class AppPulseServiceProvider extends PackageServiceProvider
             ->hasConfigFile()
             ->hasViews()
             ->hasMigration('create_app_pulse_table')
-            ->hasCommand(AppPulseCommand::class);
+            ->hasCommand(CheckMonitorStatusCommand::class);
     }
 }
