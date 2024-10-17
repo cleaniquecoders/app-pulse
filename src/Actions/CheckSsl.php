@@ -4,6 +4,7 @@ namespace CleaniqueCoders\AppPulse\Actions;
 
 use CleaniqueCoders\AppPulse\Enums\SslStatus;
 use CleaniqueCoders\AppPulse\Enums\Type;
+use CleaniqueCoders\AppPulse\Events\SslStatusChanged;
 use CleaniqueCoders\AppPulse\Models\Monitor;
 use CleaniqueCoders\Traitify\Contracts\Execute;
 use Exception;
@@ -53,5 +54,13 @@ class CheckSsl implements Execute
             'response_time' => $response_time,
             'error_message' => $error_message,
         ]);
+
+        if ($status->value != $this->monitor->status) {
+            $this->monitor->update([
+                'status' => $status->value,
+            ]);
+
+            SslStatusChanged::dispatch($this->monitor, $status);
+        }
     }
 }
