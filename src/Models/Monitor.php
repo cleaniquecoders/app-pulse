@@ -11,7 +11,14 @@ class Monitor extends Model
     use HasFactory, InteractsWithUuid;
 
     protected $fillable = [
-        'uuid', 'owner_id', 'owner_type', 'url', 'status', 'interval', 'ssl_check', 'last_checked_at',
+        'uuid',
+        'owner_id',
+        'owner_type',
+        'url',
+        'status',
+        'interval',
+        'ssl_check',
+        'last_checked_at',
     ];
 
     protected static function boot()

@@ -1,6 +1,9 @@
 <?php
 
-// config for CleaniqueCoders/AppPulse
-return [
+use App\Events\MonitorUptimeChanged;
 
+return [
+    'events' => [
+        MonitorUptimeChanged::class => [],
+    ],
 ];

@@ -22,4 +22,15 @@ class AppPulseServiceProvider extends PackageServiceProvider
             ->hasMigration('create_app_pulse_table')
             ->hasCommand(CheckMonitorStatusCommand::class);
     }
+
+    public function packageBooted()
+    {
+        $events = config('app-pulse.events', []);
+
+        foreach ($events as $event => $listeners) {
+            foreach ($listeners as $listener) {
+                $this->app['events']->listen($event, $listener);
+            }
+        }
+    }
 }

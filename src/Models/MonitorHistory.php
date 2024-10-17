@@ -10,7 +10,14 @@ class MonitorHistory extends Model
 {
     use HasFactory, InteractsWithUuid;
 
-    protected $fillable = ['uuid', 'monitor_id', 'type', 'status', 'response_time', 'error_message'];
+    protected $fillable = [
+        'uuid',
+        'monitor_id',
+        'type',
+        'status',
+        'response_time',
+        'error_message',
+    ];
 
     public function monitor()
     {
