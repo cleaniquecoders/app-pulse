@@ -41,10 +41,10 @@ class AppPulseServiceProvider extends PackageServiceProvider
         $chunk = config('app-pulse.scheduler.chunk');
 
         $schedule->command("monitor:check-status --queue={$queue} --chunk={$chunk}")
-                 ->everyMinute()
-                 ->when(function () use ($interval) {
-                     // Only run if the interval matches
-                     return now()->minute % $interval === 0;
-                 });
+            ->everyMinute()
+            ->when(function () use ($interval) {
+                // Only run if the interval matches
+                return now()->minute % $interval === 0;
+            });
     }
 }
