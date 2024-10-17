@@ -52,31 +52,77 @@ php artisan vendor:publish --tag="app-pulse-views"
 
 ## **Usage Example**
 
-You can add monitors through your application logic:
+### 1. **Adding Monitors**
+
+Use the following logic to create a new monitor record in your application:
 
 ```php
 use CleaniqueCoders\AppPulse\Models\Monitor;
 
 $monitor = Monitor::create([
-    'owner_type' => \App\Models\User::class,
-    'owner_id' => 1, // User or Application ID
-    'url' => 'https://example.com',
-    'interval' => 5,
-    'ssl_check' => true,
+    'owner_type' => \App\Models\User::class, // Owner model type
+    'owner_id' => 1, // Owner ID (e.g., User or Application)
+    'url' => 'https://example.com', // URL to monitor
+    'interval' => 10, // Interval (in minutes) between checks
+    'ssl_check' => true, // Enable or disable SSL check
 ]);
-```
-
-To initiate a check for all monitors:
-
-```bash
-php artisan apppulse:check
 ```
 
 ---
 
-## **Notifications**
+### 2. **Running Checks Manually**
 
-**Notifications** will be sent to the owner of the monitor based on the configured notification channels (e.g., Email, Slack). You can customize the notification settings per user.
+You can trigger all monitor checks manually with the following command:
+
+```bash
+php artisan monitor:check-status
+```
+
+---
+
+### 3. **Automated Checks with Scheduler**
+
+1. Ensure Laravel’s **scheduler** is configured to run every minute on your server:
+
+   ```bash
+   * * * * * php /path-to-your-project/artisan schedule:run >> /dev/null 2>&1
+   ```
+
+2. The **AppPulse scheduler** will run every X minutes, as defined in the `config/app-pulse.php`:
+
+   ```php
+   'scheduler' => [
+       'interval' => env('APP_PULSE_SCHEDULER_INTERVAL', 10), // Run every 10 minutes
+       'queue' => env('APP_PULSE_SCHEDULER_QUEUE', 'default'), // Queue to use
+       'chunk' => env('APP_PULSE_SCHEDULER_CHUNK', 100), // Process monitors in batches
+   ],
+   ```
+
+3. When the scheduler runs, it will:
+   - Dispatch a **`CheckMonitorJob`** to check uptime.
+   - Dispatch a **`CheckSslJob`** if SSL monitoring is enabled.
+
+---
+
+### 4. **Handling Events**
+
+Developers can extend **AppPulse** by listening to the following events:
+
+- **`MonitorUptimeChanged`**: Fired when a monitor’s uptime status changes.
+- **`SslStatusChanged`**: Fired when a monitor's SSL status changes.
+
+**Example Event Listener Registration** (in `EventServiceProvider`):
+
+```php
+protected $listen = [
+    \CleaniqueCoders\AppPulse\Events\MonitorUptimeChanged::class => [
+        \App\Listeners\HandleUptimeChange::class,
+    ],
+    \CleaniqueCoders\AppPulse\Events\SslStatusChanged::class => [
+        \App\Listeners\HandleSslStatusChange::class,
+    ],
+];
+```
 
 ---
 
@@ -118,4 +164,3 @@ For security concerns, review our [security policy](../../security/policy).
 ## **License**
 
 This package is open-sourced software licensed under the [MIT License](LICENSE.md).
-
