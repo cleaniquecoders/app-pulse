@@ -8,45 +8,69 @@ A comprehensive, easy-to-use monitoring tool with **uptime tracking, SSL certifi
 
 - Tracking **website uptime** and logging response times.
 - **Validating SSL certificates** and sending alerts when expiry is near.
-- Providing **custom notifications** that adhere to user configurations, ensuring personalized alerts.
 
 ---
 
 ## **Installation**
 
-You can install the package via Composer:
+### 1. **Install the Package**
+
+You can install **AppPulse** via Composer:
 
 ```bash
 composer require cleaniquecoders/app-pulse
 ```
 
-Publish and run the migrations:
+---
 
-```bash
-php artisan vendor:publish --tag="app-pulse-migrations"
-php artisan migrate
-```
+### 2. **Publish Configuration & Migrations**
 
-Publish the configuration file:
+Run the following commands to publish the configuration and migration files:
 
 ```bash
 php artisan vendor:publish --tag="app-pulse-config"
+php artisan vendor:publish --tag="app-pulse-migrations"
 ```
 
-Published config file contents:
+This will generate the **config file** at:
+
+```php
+config/app-pulse.php
+```
+
+Example config:
 
 ```php
 return [
-    'default_check_interval' => 5, // Default interval in minutes
-    'ssl_warning_days' => 30, // Days before SSL expiry to trigger alert
+    'events' => [
+        \CleaniqueCoders\AppPulse\Events\MonitorUptimeChanged::class => [],
+        \CleaniqueCoders\AppPulse\Events\SslStatusChanged::class => [],
+    ],
+    'scheduler' => [
+        'interval' => env('APP_PULSE_SCHEDULER_INTERVAL', 10), // Minutes between checks
+        'queue' => env('APP_PULSE_SCHEDULER_QUEUE', 'default'), // Queue to use
+        'chunk' => env('APP_PULSE_SCHEDULER_CHUNK', 100), // Monitors per batch
+    ],
 ];
 ```
 
-Optionally, you can publish the views with:
+Next, run the migrations to create the necessary database tables:
 
 ```bash
-php artisan vendor:publish --tag="app-pulse-views"
+php artisan migrate
 ```
+
+---
+
+### 3. **Set Up Laravel Scheduler**
+
+Ensure that Laravel’s **scheduler** is running. Add the following cron entry to your server to run the scheduler every minute:
+
+```bash
+* * * * * php /path-to-your-project/artisan schedule:run >> /dev/null 2>&1
+```
+
+The **monitor checks** will now run at intervals defined in `config/app-pulse.php` (default: every 10 minutes).
 
 ---
 
