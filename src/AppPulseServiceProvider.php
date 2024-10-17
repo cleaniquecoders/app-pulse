@@ -3,6 +3,7 @@
 namespace CleaniqueCoders\AppPulse;
 
 use CleaniqueCoders\AppPulse\Commands\CheckMonitorStatusCommand;
+use Illuminate\Console\Scheduling\Schedule;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
@@ -32,5 +33,18 @@ class AppPulseServiceProvider extends PackageServiceProvider
                 $this->app['events']->listen($event, $listener);
             }
         }
+
+        $schedule = $this->app->make(Schedule::class);
+
+        $interval = config('app-pulse.scheduler.interval');
+        $queue = config('app-pulse.scheduler.queue', 'default');
+        $chunk = config('app-pulse.scheduler.chunk');
+
+        $schedule->command("monitor:check-status --queue={$queue} --chunk={$chunk}")
+                 ->everyMinute()
+                 ->when(function () use ($interval) {
+                     // Only run if the interval matches
+                     return now()->minute % $interval === 0;
+                 });
     }
 }
