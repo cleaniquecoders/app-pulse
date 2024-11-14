@@ -4,6 +4,7 @@ namespace CleaniqueCoders\AppPulse;
 
 use CleaniqueCoders\AppPulse\Commands\CheckMonitorStatusCommand;
 use Illuminate\Console\Scheduling\Schedule;
+use Illuminate\Contracts\Events\Dispatcher;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
@@ -11,11 +12,6 @@ class AppPulseServiceProvider extends PackageServiceProvider
 {
     public function configurePackage(Package $package): void
     {
-        /*
-         * This class is a Package Service Provider
-         *
-         * More info: https://github.com/spatie/laravel-package-tools
-         */
         $package
             ->name('app-pulse')
             ->hasConfigFile()
@@ -23,18 +19,18 @@ class AppPulseServiceProvider extends PackageServiceProvider
             ->hasCommand(CheckMonitorStatusCommand::class);
     }
 
-    /**
-     * Boot additional package functionality, such as event listeners and scheduled tasks.
-     */
     public function packageBooted(): void
     {
         $events = config('app-pulse.events', []);
 
         if (is_array($events)) {
+            /** @var Dispatcher $dispatcher */
+            $dispatcher = $this->app->make(Dispatcher::class);
+
             foreach ($events as $event => $listeners) {
                 if (is_array($listeners)) {
                     foreach ($listeners as $listener) {
-                        $this->app['events']->listen($event, $listener);
+                        $dispatcher->listen($event, $listener);
                     }
                 }
             }
@@ -42,14 +38,16 @@ class AppPulseServiceProvider extends PackageServiceProvider
 
         $schedule = $this->app->make(Schedule::class);
 
-        $interval = config('app-pulse.scheduler.interval', 1);
-        $queue = config('app-pulse.scheduler.queue', 'default');
-        $chunk = config('app-pulse.scheduler.chunk', 100);
+        /** @var int */
+        $interval = config('app-pulse.scheduler.interval') ?? 1;
+        /** @var string */
+        $queue = config('app-pulse.scheduler.queue') ?? 'default';
+        /** @var int */
+        $chunk = config('app-pulse.scheduler.chunk') ?? 100;
 
-        $schedule->command("monitor:check-status --queue={$queue} --chunk={$chunk}")
+        $schedule->command("monitor:check-status --queue=$queue --chunk=$chunk")
             ->everyMinute()
             ->when(function () use ($interval) {
-                // Only run if the interval matches
                 return now()->minute % $interval === 0;
             });
     }

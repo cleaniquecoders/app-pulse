@@ -9,29 +9,22 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 /**
- * Model Monitor
- *
- * Represents a monitoring instance for a URL, handling details such as status, interval, SSL checks,
- * and relationships with its owner and historical records.
- *
- *
- * @property string $uuid Unique identifier for the monitor.
- * @property int $owner_id ID of the owner entity.
- * @property string $owner_type Type of the owner entity (polymorphic).
- * @property string $url URL being monitored.
- * @property string $status Current status of the monitor.
- * @property int $interval Monitoring interval in minutes.
- * @property bool $ssl_check Whether SSL checks are enabled for the monitor.
- * @property \Carbon\Carbon|null $last_checked_at Timestamp of the last check performed.
+ * @property string $uuid
+ * @property int $owner_id
+ * @property string $owner_type
+ * @property string $url
+ * @property string $status
+ * @property int $interval
+ * @property bool $ssl_check
+ * @property \Carbon\Carbon|null $last_checked_at
  */
 class Monitor extends Model
 {
-    use HasFactory, InteractsWithUuid;
+    use HasFactory;
+    use InteractsWithUuid;
 
     /**
-     * Fillable attributes for mass assignment.
-     *
-     * @var array<string>
+     * @var array<int, string>
      */
     protected $fillable = [
         'uuid',
@@ -44,14 +37,7 @@ class Monitor extends Model
         'last_checked_at',
     ];
 
-    /**
-     * Boot method to add model event listeners.
-     *
-     * Deletes associated histories when a monitor is deleted.
-     *
-     * @return void
-     */
-    protected static function boot()
+    protected static function boot(): void
     {
         parent::boot();
 
@@ -61,7 +47,7 @@ class Monitor extends Model
     }
 
     /**
-     * Get the owner of the monitor (polymorphic relationship).
+     * @return MorphTo<Model, Monitor>
      */
     public function owner(): MorphTo
     {
@@ -69,7 +55,7 @@ class Monitor extends Model
     }
 
     /**
-     * Get the monitoring history records associated with the monitor.
+     * @return HasMany<MonitorHistory, Monitor>
      */
     public function histories(): HasMany
     {
