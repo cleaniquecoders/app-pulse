@@ -23,21 +23,28 @@ class AppPulseServiceProvider extends PackageServiceProvider
             ->hasCommand(CheckMonitorStatusCommand::class);
     }
 
-    public function packageBooted()
+    /**
+     * Boot additional package functionality, such as event listeners and scheduled tasks.
+     */
+    public function packageBooted(): void
     {
         $events = config('app-pulse.events', []);
 
-        foreach ($events as $event => $listeners) {
-            foreach ($listeners as $listener) {
-                $this->app['events']->listen($event, $listener);
+        if (is_array($events)) {
+            foreach ($events as $event => $listeners) {
+                if (is_array($listeners)) {
+                    foreach ($listeners as $listener) {
+                        $this->app['events']->listen($event, $listener);
+                    }
+                }
             }
         }
 
         $schedule = $this->app->make(Schedule::class);
 
-        $interval = config('app-pulse.scheduler.interval');
+        $interval = config('app-pulse.scheduler.interval', 1);
         $queue = config('app-pulse.scheduler.queue', 'default');
-        $chunk = config('app-pulse.scheduler.chunk');
+        $chunk = config('app-pulse.scheduler.chunk', 100);
 
         $schedule->command("monitor:check-status --queue={$queue} --chunk={$chunk}")
             ->everyMinute()

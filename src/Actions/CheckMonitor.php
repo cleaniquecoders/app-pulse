@@ -20,6 +20,7 @@ class CheckMonitor implements Execute
         $status = SiteStatus::tryFrom($monitor->status);
         $error_message = null;
         $response_time = 0;
+        $startTime = 0;
 
         try {
             $startTime = microtime(true);

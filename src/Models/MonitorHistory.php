@@ -5,6 +5,7 @@ namespace CleaniqueCoders\AppPulse\Models;
 use CleaniqueCoders\Traitify\Concerns\InteractsWithUuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class MonitorHistory extends Model
 {
@@ -19,7 +20,7 @@ class MonitorHistory extends Model
         'error_message',
     ];
 
-    public function monitor()
+    public function monitor(): BelongsTo
     {
         return $this->belongsTo(Monitor::class);
     }

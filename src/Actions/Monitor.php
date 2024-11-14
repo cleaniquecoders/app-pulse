@@ -21,6 +21,12 @@ class Monitor implements Contract
 
     public function delete(Model $monitor): bool
     {
-        return $monitor->delete();
+        try {
+            $monitor->delete();
+
+            return true;
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 }

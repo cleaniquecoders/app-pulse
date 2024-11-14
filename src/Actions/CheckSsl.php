@@ -13,10 +13,19 @@ use Spatie\SslCertificate\SslCertificate;
 
 class CheckSsl implements Execute
 {
+    protected ?SslCertificate $mockCertificate = null;
+
     public function __construct(
         protected Monitor $monitor,
         protected bool $force = false
     ) {}
+
+    public function mock(SslCertificate $certificate): self
+    {
+        $this->mockCertificate = $certificate;
+
+        return $this;
+    }
 
     public function execute(): self
     {
@@ -24,14 +33,27 @@ class CheckSsl implements Execute
             return $this;
         }
 
+        if (! $this->monitor->url) {
+            return $this;
+        }
+
         try {
             $host = $this->getHost($this->monitor->url);
-            $certificate = SslCertificate::createForHost($host);
 
-            $daysUntilExpiration = $certificate->expirationDate()->diffInDays();
-            $status = $certificate->isExpired() ? SslStatus::EXPIRED : SslStatus::VALID;
+            if (! is_string($host)) {
+                throw new Exception('Invalid URL given');
+            }
 
-            $this->createCheckHistory($status, $daysUntilExpiration);
+            $certificate = $this->mockCertificate ?? SslCertificate::createForHostName($host);
+
+            if ($certificate instanceof SslCertificate) {
+                $daysUntilExpiration = $certificate->expirationDate()->diffInDays();
+                $status = $certificate->isExpired() ? SslStatus::EXPIRED : SslStatus::VALID;
+
+                $this->createCheckHistory($status, $daysUntilExpiration);
+            } else {
+                throw new Exception('Unable to Check SSL');
+            }
         } catch (Exception $e) {
             $this->createCheckHistory(SslStatus::FAILED_CHECK, 0, $e->getMessage());
         }
@@ -39,12 +61,12 @@ class CheckSsl implements Execute
         return $this;
     }
 
-    private function getHost(string $url): string
+    private function getHost(string $url): string|bool
     {
         return parse_url($url, PHP_URL_HOST) ?? $url;
     }
 
-    private function createCheckHistory(SslStatus $status, int $response_time, ?string $error_message = null)
+    private function createCheckHistory(SslStatus $status, int|float $response_time, ?string $error_message = null): void
     {
         MonitorHistory::create([
             'uuid' => Str::orderedUuid(),
