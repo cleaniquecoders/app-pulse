@@ -2,6 +2,12 @@
 
 All notable changes to `app-pulse` will be documented in this file.
 
+## v1.0.1 - Improve codes with PHPStan - Level 9 - 2024-11-14
+
+**Full Changelog**: https://github.com/cleaniquecoders/app-pulse/compare/v1.0.0...v1.0.1
+
+*p/s: Still few issues not yet fix on PHPStan*
+
 ## v1.0.0 - 2024-10-17
 
 ### **Release Notes for AppPulse v1.0.0**
@@ -52,6 +58,7 @@ It provides core features for tracking **uptime status** and **SSL certificate v
   ```bash
   composer require cleaniquecoders/app-pulse
   
+  
   ```
 - Publish configuration and migrations with:
   
@@ -59,6 +66,7 @@ It provides core features for tracking **uptime status** and **SSL certificate v
   php artisan vendor:publish --tag="app-pulse-config"
   php artisan vendor:publish --tag="app-pulse-migrations"
   php artisan migrate
+  
   
   ```
 - Cron setup instructions included for smooth operation with Laravel’s scheduler.
