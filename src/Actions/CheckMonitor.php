@@ -33,6 +33,27 @@ class CheckMonitor implements Execute
             $response_time = (microtime(true) - $startTime) * 1000;
         }
 
+        // if no record, just create the history
+        if (! $this->monitor->hasHistory(Type::UPTIME)) {
+            MonitorHistory::create([
+                'uuid' => Str::orderedUuid(),
+                'monitor_id' => $monitor->id,
+                'type' => Type::UPTIME->value,
+                'status' => $status->value,
+                'response_time' => $response_time,
+                'error_message' => $error_message,
+            ]);
+
+            MonitorUptimeChanged::dispatch($this->monitor, $status);
+
+            return $this;
+        }
+
+        // if there's histories, get latest history and
+        // and compare with the current status.
+        $previous_history = $this->monitor->getLatestHistory(Type::UPTIME);
+        $previous_status = SiteStatus::tryFrom($previous_history->status);
+
         MonitorHistory::create([
             'uuid' => Str::orderedUuid(),
             'monitor_id' => $monitor->id,
@@ -42,12 +63,8 @@ class CheckMonitor implements Execute
             'error_message' => $error_message,
         ]);
 
-        if ($status->value != $monitor->status) {
-            $monitor->update([
-                'status' => $status,
-            ]);
-
-            MonitorUptimeChanged::dispatch($monitor, $status);
+        if ($previous_status && $status->value != $previous_status?->value) {
+            MonitorUptimeChanged::dispatch($this->monitor, $status);
         }
 
         return $this;

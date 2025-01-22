@@ -13,7 +13,7 @@ it('creates a monitor with valid attributes', function () {
 
     expect($monitor->uuid)->not->toBeNull();
     expect($monitor->url)->toBe('https://example.com');
-    expect($monitor->status)->toBe('pending');
+    expect($monitor->status)->toBe(true);
     expect($monitor->interval)->toBe(10);
     expect($monitor->ssl_check)->toBeTrue();
 });

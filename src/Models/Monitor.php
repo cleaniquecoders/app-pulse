@@ -2,6 +2,7 @@
 
 namespace CleaniqueCoders\AppPulse\Models;
 
+use CleaniqueCoders\AppPulse\Enums\Type;
 use CleaniqueCoders\Traitify\Concerns\InteractsWithUuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -37,6 +38,13 @@ class Monitor extends Model
         'last_checked_at',
     ];
 
+    /**
+     * @var array<int, string>
+     */
+    protected $casts = [
+        'status' => 'boolean',
+    ];
+
     protected static function boot(): void
     {
         parent::boot();
@@ -60,5 +68,15 @@ class Monitor extends Model
     public function histories(): HasMany
     {
         return $this->hasMany(MonitorHistory::class);
+    }
+
+    public function hasHistory(Type $type): bool
+    {
+        return $this->histories()->where('type', $type->value)->exists();
+    }
+
+    public function getLatestHistory(Type $type): MonitorHistory
+    {
+        return $this->histories()->where('type', $type->value)->latest()->first();
     }
 }

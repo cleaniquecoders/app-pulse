@@ -77,12 +77,17 @@ class CheckSsl implements Execute
             'error_message' => $error_message,
         ]);
 
-        if ($status->value != $this->monitor->status) {
-            $this->monitor->update([
-                'status' => $status->value,
-            ]);
+        if ($this->monitor->hasHistory(Type::SSL)) {
+            $previous_history = $this->monitor->getLatestHistory(Type::SSL);
+            $previous_status = SslStatus::tryFrom($previous_history->status);
 
-            SslStatusChanged::dispatch($this->monitor, $status);
+            if ($previous_status && $status->value != $previous_status?->value) {
+                SslStatusChanged::dispatch($this->monitor, $status);
+            }
+
+            return;
         }
+
+        SslStatusChanged::dispatch($this->monitor, $status);
     }
 }

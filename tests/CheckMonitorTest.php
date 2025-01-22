@@ -2,6 +2,7 @@
 
 use CleaniqueCoders\AppPulse\Actions\CheckMonitor;
 use CleaniqueCoders\AppPulse\Enums\SiteStatus;
+use CleaniqueCoders\AppPulse\Enums\Status;
 use CleaniqueCoders\AppPulse\Enums\Type;
 use CleaniqueCoders\AppPulse\Events\MonitorUptimeChanged;
 use CleaniqueCoders\AppPulse\Models\Monitor;
@@ -15,7 +16,7 @@ beforeEach(function () {
     // Set up a test monitor
     $this->monitor = Monitor::factory()->create([
         'url' => 'https://example.com',
-        'status' => SiteStatus::DOWN->value,
+        'status' => Status::ENABLED->value,
     ]);
 
     Event::fake();  // Prevent actual event dispatching
@@ -34,9 +35,6 @@ it('marks the monitor as up when the response is successful', function () {
         'status' => SiteStatus::UP->value,
     ]);
 
-    // Verify that the monitor status was updated
-    $this->assertEquals(SiteStatus::UP->value, $this->monitor->fresh()->status);
-
     // Ensure the event was dispatched
     Event::assertDispatched(MonitorUptimeChanged::class);
 });
@@ -54,11 +52,8 @@ it('marks the monitor as down when the response fails', function () {
         'status' => SiteStatus::DOWN->value,
     ]);
 
-    // Ensure the monitor status remains as down
-    $this->assertEquals(SiteStatus::DOWN->value, $this->monitor->fresh()->status);
-
     // Ensure no event was dispatched since the status didn't change
-    Event::assertNotDispatched(MonitorUptimeChanged::class);
+    Event::assertDispatched(MonitorUptimeChanged::class);
 });
 
 it('logs an error message if the request fails', function () {
