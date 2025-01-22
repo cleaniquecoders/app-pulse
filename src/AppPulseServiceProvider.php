@@ -15,7 +15,7 @@ class AppPulseServiceProvider extends PackageServiceProvider
         $package
             ->name('app-pulse')
             ->hasConfigFile()
-            ->hasMigrations('create_app_pulse_table', 'update_monitor_status_field_data_type')
+            ->hasMigrations('create_app_pulse_table', 'update_monitor_status_data_type')
             ->hasCommand(CheckMonitorStatusCommand::class);
     }
 
