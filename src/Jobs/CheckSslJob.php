@@ -21,7 +21,7 @@ class CheckSslJob implements ShouldQueue
     /**
      * The monitor instance to be checked.
      */
-    protected Monitor $monitor;
+    public Monitor $monitor;
 
     /**
      * Create a new job instance.
