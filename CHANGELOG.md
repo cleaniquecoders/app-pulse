@@ -2,6 +2,10 @@
 
 All notable changes to `app-pulse` will be documented in this file.
 
+## v1.0.3 - 2025-01-22
+
+**Full Changelog**: https://github.com/cleaniquecoders/app-pulse/compare/v1.0.2...v1.0.3
+
 ## v1.0.2 - 2025-01-22
 
 **Full Changelog**: https://github.com/cleaniquecoders/app-pulse/compare/v1.0.1...v1.0.2
@@ -64,6 +68,7 @@ It provides core features for tracking **uptime status** and **SSL certificate v
   
   
   
+  
   ```
 - Publish configuration and migrations with:
   
@@ -71,6 +76,7 @@ It provides core features for tracking **uptime status** and **SSL certificate v
   php artisan vendor:publish --tag="app-pulse-config"
   php artisan vendor:publish --tag="app-pulse-migrations"
   php artisan migrate
+  
   
   
   
