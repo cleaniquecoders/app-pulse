@@ -1,6 +1,7 @@
 <?php
 
 use CleaniqueCoders\AppPulse\Actions\MonitorHistory;
+use CleaniqueCoders\AppPulse\Enums\Status;
 use CleaniqueCoders\AppPulse\Models\Monitor;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Http;
@@ -16,6 +17,7 @@ beforeEach(function () {
     $this->monitor = Monitor::factory()->create([
         'url' => 'https://example.com',
         'ssl_check' => true,
+        'status' => Status::ENABLED->value,
     ]);
 });
 
