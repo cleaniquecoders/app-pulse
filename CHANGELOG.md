@@ -2,6 +2,10 @@
 
 All notable changes to `app-pulse` will be documented in this file.
 
+## Added Laravel 12 and PHP 8.4 Support - 2025-05-01
+
+**Full Changelog**: https://github.com/cleaniquecoders/app-pulse/compare/v1.0.3...1.1.0
+
 ## v1.0.3 - 2025-01-22
 
 **Full Changelog**: https://github.com/cleaniquecoders/app-pulse/compare/v1.0.2...v1.0.3
@@ -69,6 +73,7 @@ It provides core features for tracking **uptime status** and **SSL certificate v
   
   
   
+  
   ```
 - Publish configuration and migrations with:
   
@@ -76,6 +81,7 @@ It provides core features for tracking **uptime status** and **SSL certificate v
   php artisan vendor:publish --tag="app-pulse-config"
   php artisan vendor:publish --tag="app-pulse-migrations"
   php artisan migrate
+  
   
   
   
