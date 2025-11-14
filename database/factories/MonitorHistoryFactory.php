@@ -17,6 +17,7 @@ class MonitorHistoryFactory extends Factory
             'status' => $this->faker->randomElement(['up', 'down', 'ssl_valid', 'ssl_expired']),
             'response_time' => $this->faker->numberBetween(100, 5000),
             'error_message' => $this->faker->optional()->sentence,
+            'retry_count' => 0,
         ];
     }
 }

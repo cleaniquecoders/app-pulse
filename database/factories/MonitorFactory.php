@@ -23,9 +23,19 @@ class MonitorFactory extends Factory
             'owner_id' => $owner->id,
             'owner_type' => get_class($owner),
             'url' => fake()->url,
-            'status' => 'pending',
+            'status' => false,
             'interval' => fake()->numberBetween(1, 60),
+            'timeout' => 10,
+            'retry_attempts' => 3,
+            'retry_delay' => 1,
+            'response_time_threshold' => null,
             'ssl_check' => true,
+            'is_maintenance' => false,
+            'maintenance_start_at' => null,
+            'maintenance_end_at' => null,
+            'alert_throttle_minutes' => 60,
+            'last_alerted_at' => null,
+            'notification_channels' => null,
         ];
     }
 }

@@ -3,6 +3,7 @@
 namespace CleaniqueCoders\AppPulse;
 
 use CleaniqueCoders\AppPulse\Commands\CheckMonitorStatusCommand;
+use CleaniqueCoders\AppPulse\Notifications\NotificationManager;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Contracts\Events\Dispatcher;
 use Spatie\LaravelPackageTools\Package;
@@ -15,8 +16,20 @@ class AppPulseServiceProvider extends PackageServiceProvider
         $package
             ->name('app-pulse')
             ->hasConfigFile()
-            ->hasMigrations('create_app_pulse_table', 'update_monitor_status_data_type')
+            ->hasMigrations(
+                'create_app_pulse_table',
+                'update_monitor_status_data_type',
+                'add_enhanced_monitoring_and_alerting_features_to_monitors_table'
+            )
             ->hasCommand(CheckMonitorStatusCommand::class);
+    }
+
+    public function packageRegistered(): void
+    {
+        // Bind NotificationManager as a singleton
+        $this->app->singleton(NotificationManager::class, function ($app) {
+            return new NotificationManager;
+        });
     }
 
     public function packageBooted(): void

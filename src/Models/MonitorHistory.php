@@ -18,6 +18,7 @@ class MonitorHistory extends Model
         'status',
         'response_time',
         'error_message',
+        'retry_count',
     ];
 
     public function monitor(): BelongsTo

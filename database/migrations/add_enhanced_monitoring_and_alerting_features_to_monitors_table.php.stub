@@ -1,0 +1,62 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up()
+    {
+        Schema::table('monitors', function (Blueprint $table) {
+            // Configurable Timeouts
+            $table->integer('timeout')->default(10)->after('interval'); // Timeout in seconds
+
+            // Retry Logic
+            $table->integer('retry_attempts')->default(3)->after('timeout');
+            $table->integer('retry_delay')->default(1)->after('retry_attempts'); // Initial delay in seconds
+
+            // Response Time Tracking
+            $table->integer('response_time_threshold')->nullable()->after('retry_delay'); // Alert threshold in ms
+
+            // Maintenance Mode
+            $table->boolean('is_maintenance')->default(false)->after('ssl_check');
+            $table->timestamp('maintenance_start_at')->nullable()->after('is_maintenance');
+            $table->timestamp('maintenance_end_at')->nullable()->after('maintenance_start_at');
+
+            // Alert Management
+            $table->integer('alert_throttle_minutes')->default(60)->after('maintenance_end_at'); // Minimum time between alerts
+            $table->timestamp('last_alerted_at')->nullable()->after('alert_throttle_minutes');
+
+            // Notification Channels (JSON array of enabled channels)
+            $table->json('notification_channels')->nullable()->after('last_alerted_at');
+        });
+
+        Schema::table('monitor_histories', function (Blueprint $table) {
+            // Retry tracking
+            $table->integer('retry_count')->default(0)->after('response_time');
+        });
+    }
+
+    public function down()
+    {
+        Schema::table('monitors', function (Blueprint $table) {
+            $table->dropColumn([
+                'timeout',
+                'retry_attempts',
+                'retry_delay',
+                'response_time_threshold',
+                'is_maintenance',
+                'maintenance_start_at',
+                'maintenance_end_at',
+                'alert_throttle_minutes',
+                'last_alerted_at',
+                'notification_channels',
+            ]);
+        });
+
+        Schema::table('monitor_histories', function (Blueprint $table) {
+            $table->dropColumn('retry_count');
+        });
+    }
+};

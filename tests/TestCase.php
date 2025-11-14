@@ -30,5 +30,11 @@ class TestCase extends Orchestra
 
         $migration = include __DIR__.'/../database/migrations/create_app_pulse_table.php.stub';
         $migration->up();
+
+        $migration = include __DIR__.'/../database/migrations/update_monitor_status_data_type.php.stub';
+        $migration->up();
+
+        $migration = include __DIR__.'/../database/migrations/add_enhanced_monitoring_and_alerting_features_to_monitors_table.php.stub';
+        $migration->up();
     }
 }
